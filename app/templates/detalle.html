@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ peli.title }} - Detalles</title>
+</head>
+<body style="font-family: sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
+    <a href="/bienvenida">⬅ Volver a la cartelera</a>
+    
+    <div style="display: flex; gap: 30px; margin-top: 20px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <img src="https://image.tmdb.org/t/p/w400{{ peli.poster_path }}" style="border-radius: 10px; width: 300px;">
+        
+        <div>
+            <h1>{{ peli.title }}</h1>
+            <p><strong>Año:</strong> {{ peli.release_date[:4] }}</p>
+            <p><strong>Puntuación:</strong> ⭐ {{ peli.vote_average }}</p>
+            <h3>Sinopsis:</h3>
+            <p style="line-height: 1.6;">{{ peli.overview }}</p>
+            
+            <h3>Reparto principal:</h3>
+            <ul>
+                {% for actor in peli.credits.cast[:5] %}
+                <li><strong>{{ actor.name }}</strong> como {{ actor.character }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
