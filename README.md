@@ -1,44 +1,133 @@
-# Docker Getting Started Tutorial
+🎬 CineApp: Gestión Segura de Cartelera y Roles (SecDevOps)
 
-This tutorial was written with the intent of helping folks get up and running
-with containers and is designed to work with Docker Desktop. While not going too much 
-into depth, it covers the following topics:
+CineApp es una plataforma web desarrollada con Python (Flask) bajo principios de seguridad SecDevOps. El sistema permite la gestión de usuarios, visualización de películas en tiempo real y un panel de administración protegido mediante roles dinámicos.
 
-- Running your first container
-- Building containers
-- Learning what containers are
-- Running and removing containers
-- Using volumes to persist data
-- Using bind mounts to support development
-- Using container networking to support multi-container applications
-- Using Docker Compose to simplify the definition and sharing of applications
-- Using image layer caching to speed up builds and reduce push/pull size
-- Using multi-stage builds to separate build-time and runtime dependencies
+🛡️ Arquitectura de Seguridad (OWASP Top 10 Compliance)
 
-## Getting Started
+Este proyecto ha sido auditado y diseñado para mitigar las vulnerabilidades más críticas según el estándar internacional OWASP:
 
-If you wish to run the tutorial, you can use the following command after installing Docker Desktop:
+A01:2021 – Control de Acceso Quebrado: Implementación de RBAC (Role-Based Access Control) con Flask-Login. Solo los usuarios con el rol admin visualizan componentes críticos.
 
-```bash
-docker run -d -p 80:80 docker/getting-started
-```
+A02:2021 – Fallos Criptográficos: Uso de Flask-Bcrypt para el hashing de contraseñas. Nunca se almacena información sensible en texto plano.
 
-Once it has started, you can open your browser to [http://localhost](http://localhost).
+A03:2021 – Inyección: Uso de SQLAlchemy ORM para realizar consultas parametrizadas automáticas, eliminando riesgos de Inyección SQL.
 
-## Development
+A05:2021 – Configuración de Seguridad Incorrecta: Integración de Flask-Talisman para el hardening de cabeceras HTTP (CSP, XSS Protection, Clickjacking).
 
-This project has a `docker-compose.yml` file, which will start the mkdocs application on your
-local machine and help you see changes instantly.
+🔌 Integración de Servicios Externos (API TMDB)
 
-```bash
-docker compose up
-```
+La aplicación consume datos en tiempo real de The Movie Database (TMDB).
 
-## Contributing
+Backend-to-API: Las peticiones se gestionan desde el servidor para proteger la API_KEY.
 
-If you find typos or other issues with the tutorial, feel free to create a PR and suggest fixes!
+Resiliencia: Manejo de errores mediante bloques try-except y timeouts para asegurar la disponibilidad si el servicio externo falla.
 
-If you have ideas on how to make the tutorial better or want to suggest adding new content, please open an 
-issue first before working on your idea. While we love input, we want to keep the tutorial scoped to new-comers.
-As such, we may reject ideas for more advanced requests and don't want you to lose any work you might
-have done. So, ask first and we'll gladly hear your thoughts!
+Privacidad: Se aplica el principio de mínimo privilegio, extrayendo únicamente los campos necesarios del JSON de respuesta (title, poster_path, overview).
+
+🧪 Suite de Pruebas y Validación de Seguridad (Postman)
+
+Se ha implementado una batería de pruebas automatizadas que validan la seguridad en tres niveles críticos:
+
+1. Validación de Acceso y Hardening (POST /login)
+
+Confirma que el sistema procesa credenciales correctamente y que el servidor no revela información técnica sensible (fingerprinting).
+
+pm.test("Estado final exitoso (200 OK)", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Seguridad: No se revela la versión del servidor", function () {
+    // Evita que atacantes conozcan la tecnología exacta (ej. Werkzeug)
+    pm.expect(pm.response.headers.get("Server")).to.not.include("Werkzeug");
+});
+
+
+2. Control de Acceso Basado en Roles - RBAC (GET /bienvenida)
+
+Valida que el servidor aplica la lógica de autorización entregando contenido exclusivo al rol Administrador.
+
+pm.test("Verificación de Rol: Interfaz de ADMIN detectada", function () {
+    var responseText = pm.response.text();
+    pm.expect(responseText).to.include("🛡️ Panel de Control: Administrador");
+});
+
+
+3. Auditoría de Protección de Navegador (Middleware Talisman)
+
+Validamos la presencia de cabeceras críticas inyectadas por el firewall de aplicación.
+
+pm.test("Seguridad: Cabecera X-Frame-Options presente", function () {
+    // Mitigación efectiva contra ataques de Clickjacking
+    pm.expect(pm.response.headers.has("X-Frame-Options")).to.be.true;
+});
+
+
+📊 Resumen de Resultados de la Auditoría
+
+Categoría
+
+Prueba
+
+Resultado
+
+Riesgo Mitigado
+
+Identidad
+
+Autenticación Segura
+
+PASSED ✅
+
+A07:2021 – Fallos de Identificación
+
+Autorización
+
+Detección de Rol Admin
+
+PASSED ✅
+
+A01:2021 – Acceso Quebrado
+
+Infraestructura
+
+Hardening (Server Header)
+
+PASSED ✅
+
+A05:2021 – Configuración Insegura
+
+Integridad
+
+Protección Clickjacking
+
+PASSED ✅
+
+A04:2021 – Diseño Inseguro
+
+🛠️ Tecnologías y Dependencias
+
+Lenguaje: Python 3.x
+
+Framework: Flask
+
+Base de Datos: SQLite con SQLAlchemy (ORM)
+
+Seguridad: Flask-Bcrypt, Flask-Talisman, Flask-Login
+
+Consumo API: Requests library
+
+Pruebas: Postman API Client
+
+🚀 Instalación y Despliegue Local
+
+Clonar el repositorio.
+
+Crear entorno virtual: python -m venv venv.
+
+Instalar dependencias: pip install -r requirements.txt.
+
+Configurar API Key de TMDB en app.py.
+
+Ejecutar la aplicación: python app.py.
+
+Nota Final: Este proyecto ha sido desarrollado como parte de una formación en SecDevOps, priorizando la seguridad en el ciclo de vida del desarrollo de software (SDLC).
