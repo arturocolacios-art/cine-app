@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user # <-- Asegúrate de añadir UserMixin aquí
 from flask_bcrypt import Bcrypt
 from flask_talisman import Talisman
 from flask import render_template
@@ -10,21 +11,32 @@ app = Flask(__name__)
 
 app.secret_key = 'c7d6bcb92963629d6ceae5c6514492bbc3ba13e29f26a0f6ura'
 
-# Seguridad OWASP: Cabeceras seguras
+#Login manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# OWASP: Cabeceras seguras
 Talisman(app, content_security_policy=None)
 
 # 1. Configuración de Base de Datos SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cine.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# OWASP: Seguridad ante inyecciones y contraseñas cifradas
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
 # 2. Modelo de Usuario (Tabla en la DB)
-class Usuario(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.String(10), default='user') # Puede ser 'user' o 'admin'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # 3. Crea las tablas automáticamente
 with app.app_context():
@@ -33,24 +45,32 @@ with app.app_context():
 # 4. RUTA DE REGISTRO
 @app.route('/registrar', methods=['POST'])
 def registrar():
-    # Esta línea permite obtener datos tanto de JSON (Postman) como de Formulario (Web)
     if request.is_json:
         datos = request.get_json()
     else:
         datos = request.form
 
     try:
-        hash_password = bcrypt.generate_password_hash(datos['password']).decode('utf-8')
-        nuevo_usuario = Usuario(
-            username=datos['username'],
-            password=hash_password
-        )
+        # 1. Extraemos los datos correctamente
+        username = datos.get('username')
+        password = datos.get('password')
+
+        # 2. Creamos el hash con la variable correcta
+        hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        # 3. Creamos el usuario usando las variables que acabamos de definir
+        #nuevo_usuario = User(username=username, password=hash_password, role='admin')
+        nuevo_usuario = User(username=username, password=hash_password, role='user')
+
         db.session.add(nuevo_usuario)
         db.session.commit()
-        # En lugar de enviar un JSON, lo mandamos al Login
+        
         return redirect(url_for('login')) 
+
     except Exception as e:
-        return "Error: El usuario ya existe", 400
+        # Esto te ayudará a ver en la terminal qué error real está pasando
+        print(f"Error real: {e}") 
+        return f"Error al registrar: {str(e)}", 400
     
 # 5. RUTA DE LOGIN
 @app.route('/login', methods=['GET', 'POST'])
@@ -61,10 +81,11 @@ def login():
         else:
             datos = request.form
         
-        usuario = Usuario.query.filter_by(username=datos['username']).first()
+        usuario = User.query.filter_by(username=datos['username']).first()
         
         if usuario and bcrypt.check_password_hash(usuario.password, datos['password']):
             # Guardamos el usuario en la "sesión" para que el servidor lo recuerde
+            login_user(usuario)
             session['usuario'] = usuario.username
             return redirect(url_for('bienvenida')) # Lo mandamos a la nueva página
         else:
@@ -74,30 +95,33 @@ def login():
 
 # 6. RUTA DE BIENVENIDA
 @app.route('/bienvenida')
+@login_required # Esto reemplaza el "if 'usuario' in session" por una protección de nivel profesional
 def bienvenida():
-    if 'usuario' in session:
-        #API KEY de TMDB
-        api_key = "fef9f1ee5ad82375662144bc489ca64b" 
-        url = f"https://api.themoviedb.org/3/movie/popular?api_key={api_key}&language=es-ES&page=1"
-        
-        try:
-            respuesta = requests.get(url)
-            datos = respuesta.json()
-            peliculas = datos.get('results', [])
-        except:
-            peliculas = [] # Si la API falla, enviamos una lista vacía para que no explote
-            
-        return render_template('bienvenida.html', nombre=session['usuario'], peliculas=peliculas)
+    # API KEY de TMDB
+    api_key = "fef9f1ee5ad82375662144bc489ca64b" 
+    url = f"https://api.themoviedb.org/3/movie/popular?api_key={api_key}&language=es-ES&page=1"
     
-    return redirect(url_for('login'))
+    try:
+        respuesta = requests.get(url, timeout=5) # Añadimos timeout por seguridad
+        respuesta.raise_for_status() # Verifica si hubo error en la petición
+        datos = respuesta.json()
+        peliculas = datos.get('results', [])
+    except Exception as e:
+        print(f"Error en API TMDB: {e}")
+        peliculas = [] 
+        
+    # Pasamos 'current_user' para que el HTML pueda leer el .role que creamos
+    return render_template('bienvenida.html', 
+                           nombre=current_user.username, 
+                           peliculas=peliculas, 
+                           user=current_user)
 
-# 6. RUTA DE DETALLE
+# 7. RUTA DE DETALLE
 @app.route('/pelicula/<int:id>')
 def detalle_pelicula(id):
     if 'usuario' in session:
         api_key = "fef9f1ee5ad82375662144bc489ca64b"
         # Llamamos al endpoint de detalles de la película
-        # append_to_response=credits nos permite traer también a los actores
         url = f"https://api.themoviedb.org/3/movie/{id}?api_key={api_key}&language=es-ES&append_to_response=credits"
         
         try:

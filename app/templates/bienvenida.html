@@ -5,16 +5,23 @@
     <title>Bienvenido al Cine</title>
 </head>
 <body style="font-family: sans-serif; padding: 20px;">
-    <h1>¡Hola, {{ nombre }}!</h1>
-    <p>Has iniciado sesión correctamente. Aquí tienes la cartelera actual:</p>
-    
+
+    {% if current_user.is_authenticated and current_user.role == 'admin' %}
+        <div style="background-color: #f8d7da; padding: 15px; border-radius: 10px; border: 1px solid #f5c6cb; margin-bottom: 20px;">
+            <h1 style="color: #721c24; margin: 0;">🛡️ Panel de Control: Administrador</h1>
+            <p style="color: #721c24; font-weight: bold;">Acceso concedido para: {{ nombre }}</p>
+        </div>
+    {% else %}
+        <h1>¡Hola, {{ nombre }}!</h1>
+        <p>Has iniciado sesión correctamente. Aquí tienes la cartelera actual:</p>
+    {% endif %}
     <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
         {% for peli in peliculas %}
         <div style="width: 200px; border: 1px solid #ddd; padding: 10px; border-radius: 10px; text-align: center; background: #f9f9f9;">
             <a href="/pelicula/{{ peli.id }}" style="text-decoration: none; color: inherit;">
                 <img src="https://image.tmdb.org/t/p/w200{{ peli.poster_path }}" style="width: 100%; cursor: pointer;">
                 <h4 style="margin: 10px 0; font-size: 14px;">{{ peli.title }}</h4>
-            <span style="background: #ffd700; padding: 2px 5px; border-radius: 5px; font-size: 12px; font-weight: bold;">
+            </a> <span style="background: #ffd700; padding: 2px 5px; border-radius: 5px; font-size: 12px; font-weight: bold;">
                 ⭐ {{ peli.vote_average }}
             </span>
         </div>
