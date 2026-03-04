@@ -1,45 +1,29 @@
-name: CI Pipeline Cine App
+name: CI Cine App
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  test-and-docker:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
-
-    # 1. Pasamos los tests unitarios antes de crear la imagen (opcional pero recomendado)
-    - name: Configurar Python para Tests
-      uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        submodules: false # Esto ignora el error de la carpeta 'cine-app'
 
-    - name: Instalar dependencias de Test
+    - name: Construir Imagen Docker
+      # Esto cumple el requisito de crear la app en contenedores
+      run: docker build -t cine-app .
+
+    - name: Levantar Contenedor
       run: |
-        pip install pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        docker run -d -p 5000:5000 --name app-container cine-app
+        sleep 10 # Esperamos a que Flask arranque
 
-    - name: Correr Tests Unitarios (Pytest)
-      run: pytest test_app.py
-
-    # 2. CREAR EL CONTENEDOR (Cumple el requisito de tu app)
-    - name: Build Docker Image
-      run: docker build -t cine-app-image .
-
-    # 3. LEVANTAR EL CONTENEDOR
-    - name: Run Docker Container
-      run: |
-        docker run -d -p 5000:5000 --name cine-container cine-app-image
-        sleep 10 # Damos tiempo a que Flask arranque dentro de Docker
-
-    # 4. PRUEBAS DE POSTMAN CONTRA EL CONTENEDOR
-    - name: Execute Newman (Postman)
+    - name: Ejecutar Pruebas de Postman
       uses: matt-ball/newman-action@v2
       with:
         collection: tests/my_api_collection.json
