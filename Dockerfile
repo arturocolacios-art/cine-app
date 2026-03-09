@@ -1,40 +1,24 @@
-# Install the base requirements for the app.
-# This stage is to support development.
-FROM --platform=$BUILDPLATFORM python:3.11-alpine AS base
+# 1. Usamos una imagen ligera de Python
+FROM python:3.9-slim
+
+# 2. Evitamos que Python genere archivos .pyc y forzamos que los logs salgan rápido
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# 3. Directorio de trabajo dentro del contenedor
 WORKDIR /app
+
+# 4. Instalamos las dependencias
+# Copiamos primero el requirements para aprovechar la caché de Docker
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-FROM --platform=$BUILDPLATFORM node:18-alpine AS app-base
-WORKDIR /app
-COPY app/package.json app/yarn.lock ./
-COPY app/spec ./spec
-COPY app/src ./src
-
-# Run tests to validate app
-FROM app-base AS test
-RUN yarn install
-RUN yarn test
-
-# Clear out the node_modules and create the zip
-FROM app-base AS app-zip-creator
-COPY --from=test /app/package.json /app/yarn.lock ./
-COPY app/spec ./spec
-COPY app/src ./src
-RUN apk add zip && \
-    zip -r /app.zip /app
-
-# Dev-ready container - actual files will be mounted in
-FROM --platform=$BUILDPLATFORM base AS dev
-CMD ["mkdocs", "serve", "-a", "0.0.0.0:8000"]
-
-# Do the actual build of the mkdocs site
-FROM --platform=$BUILDPLATFORM base AS build
+# 5. Copiamos el resto del código (incluyendo la carpeta app y templates)
 COPY . .
-RUN mkdocs build
 
-# Extract the static content from the build
-# and use a nginx image to serve the content
-FROM --platform=$TARGETPLATFORM nginx:alpine
-COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
-COPY --from=build /app/site /usr/share/nginx/html
+# 6. Exponemos el puerto 5000 (el que usa Flask por defecto)
+EXPOSE 5000
+
+# 7. Comando para arrancar la aplicación
+# OJO: Verifica que la ruta a app.py sea correcta según tu carpeta
+CMD ["python", "app.py"]
