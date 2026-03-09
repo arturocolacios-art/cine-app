@@ -1,26 +1,26 @@
-# 1. Usamos Python (es un Linux pequeñito por dentro)
+# 1. Usamos una imagen ligera de Python
 FROM python:3.9-slim
 
-# 2. Configuración para que no de guerra
+# 2. Corregimos el formato de ENV para quitar los warnings
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# 3. Carpeta de trabajo
+# 3. Directorio de trabajo
 WORKDIR /app
 
-# 4. ESTO ES LO IMPORTANTE: Instalamos el "martillo y clavos" para Linux
-# Sin esto, las librerías de seguridad fallan al instalarse
+# 4. INSTALAMOS LAS HERRAMIENTAS DE "COCINA" (Esto soluciona el Exit Code 1)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# 5. Instalamos tus librerías de Python
+# 5. Instalamos las dependencias
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# 6. Copiamos tu código de Windows al contenedor
+# 6. Copiamos tu código
 COPY . .
 
-# 7. Arrancamos
+# 7. Exponemos el puerto y arrancamos
 EXPOSE 5000
 CMD ["python", "app.py"]
