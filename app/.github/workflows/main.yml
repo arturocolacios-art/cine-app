@@ -11,17 +11,15 @@ jobs:
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
-      with:
-        submodules: false # Esto ignora el error de la carpeta 'cine-app'
 
     - name: Construir Imagen Docker
-      # Esto cumple el requisito de crear la app en contenedores
+      # Usamos el comando manual para evitar que use el Dockerfile del ejemplo
       run: docker build -t cine-app .
 
     - name: Levantar Contenedor
       run: |
         docker run -d -p 5000:5000 --name app-container cine-app
-        sleep 10 # Esperamos a que Flask arranque
+        sleep 10
 
     - name: Ejecutar Pruebas de Postman
       uses: matt-ball/newman-action@v2

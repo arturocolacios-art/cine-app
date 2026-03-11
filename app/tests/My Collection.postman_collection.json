@@ -1,0 +1,76 @@
+{
+  "info": {
+    "_postman_id": "d287250b-6113-4d06-920f-a9652b87965c",
+    "name": "My Collection",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52509428",
+    "_collection_link": "https://go.postman.co/collection/52509428-d287250b-6113-4d06-920f-a9652b87965c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "http://localhost:5000/bienvenida",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Validamos que el servidor responde bien\r",
+              "pm.test(\"Estado 200: Acceso concedido\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "// 2. Validamos que el ROLE es correcto (Prueba de Autorización)\r",
+              "pm.test(\"Verificación de Rol: Interfaz de ADMIN detectada\", function () {\r",
+              "    var r = pm.response.text();\r",
+              "    // Buscamos el texto exacto que pusimos en el HTML\r",
+              "    pm.expect(r).to.include(\"Panel de Control: Administrador\");\r",
+              "    pm.expect(r).to.include(\"🛡️\");\r",
+              "});\r",
+              "\r",
+              "// 3. Validamos que no se filtra información del servidor (Seguridad)\r",
+              "pm.test(\"Seguridad: No se revela la versión del servidor\", function () {\r",
+              "    pm.expect(pm.response.headers.get(\"Server\")).to.not.include(\"Werkzeug\");\r",
+              "});\r",
+              "\r",
+              "// 4. Protección contra Clickjacking probando que la cabecera X-Frame-Options está presente.\r",
+              "pm.test(\"Seguridad: Protección contra Clickjacking activa\", function () {\r",
+              "    pm.expect(pm.response.headers.has(\"X-Frame-Options\")).to.be.true;\r",
+              "    pm.expect(pm.response.headers.get(\"X-Frame-Options\")).to.be.oneOf([\"DENY\", \"SAMEORIGIN\"]);\r",
+              "});\r",
+              "\r",
+              "// 5. Seguridad de la Cookie de Sesión (Verifica que la cookie que envía Flask tenga atributos de seguridad para que no pueda ser robada fácilmente por scripts maliciosos)\r",
+              "pm.test(\"Seguridad: Cookie de sesión protegida (HttpOnly)\", function () {\r",
+              "    // Buscamos la cookie que suele poner Flask ('session')\r",
+              "    var sessionCookie = pm.cookies.get(\"session\");\r",
+              "    if (sessionCookie) {\r",
+              "        // En una auditoría real, buscaríamos el flag HttpOnly en la cabecera Set-Cookie\r",
+              "        pm.expect(pm.response.headers.get(\"Set-Cookie\")).to.include(\"HttpOnly\");\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/bienvenida",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "bienvenida"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
