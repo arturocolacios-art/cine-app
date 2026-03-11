@@ -1,24 +1,25 @@
-# 1. Usamos una imagen ligera de Python
-FROM python:3.9-slim
+# 1. Uso una imagen ligera de Python 3.11 para asegurar compatibilidad con librerías modernas
+FROM python:3.11-slim
 
-# 2. Evitamos que Python genere archivos .pyc y forzamos que los logs salgan rápido
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# 2. Configuro las variables de entorno con el formato moderno
+# PYTHONDONTWRITEBYTECODE: Evita que Python genere archivos .pyc
+# PYTHONUNBUFFERED: Fuerza que los logs se muestren en tiempo real sin búfer
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# 3. Directorio de trabajo dentro del contenedor
+# 3. Definimos el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# 4. Instalamos las dependencias
-# Copiamos primero el requirements para aprovechar la caché de Docker
+# 4. Gestión de dependencias
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# 5. Copiamos el resto del código (incluyendo la carpeta app y templates)
+# 5. Copiamos el código fuente al contenedor
 COPY . .
 
-# 6. Exponemos el puerto 5000 (el que usa Flask por defecto)
+# 6. Exponemos el puerto de comunicación
 EXPOSE 5000
 
-# 7. Comando para arrancar la aplicación
-# OJO: Verifica que la ruta a app.py sea correcta según tu carpeta
+# 7. Punto de entrada de la aplicación
 CMD ["python", "app.py"]
