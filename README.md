@@ -70,7 +70,7 @@ pm.test("Seguridad: Cabecera X-Frame-Options presente", function () {
 });
 ```
 
-### 📊 Resumen de Resultados de la Auditoría
+### Resumen de Resultados de la Auditoría
 
 | Categoría | Prueba | Resultado | Riesgo Mitigado |
 | :--- | :--- | :--- | :--- |
@@ -79,21 +79,21 @@ pm.test("Seguridad: Cabecera X-Frame-Options presente", function () {
 | **Infraestructura** | Hardening (Server Header) | <code>PASSED ✅</code> | A05:2025 – Configuración Insegura |
 | **Integridad** | Protección Clickjacking | <code>PASSED ✅</code> | A04:2025 – Diseño Inseguro |
 
-## 🛠️ Resolución de Problemas (Troubleshooting)
+## Resolución de Problemas (Troubleshooting)
 
 Durante el desarrollo y despliegue se detectaron y corrigieron los siguientes incidentes técnicos:
 
-### ❌ `NameError: 'Usuario' is not defined`
+### `NameError: 'Usuario' is not defined`
 * **Causa:** Conflicto de nomenclatura entre la clase del modelo y la referencia en la ruta.
 * **Solución:** Reestructuración de las importaciones de los modelos SQLAlchemy y estandarización del nombre de la clase a `User`.
 
 ---
 
-### ❌ `AttributeError: 'Flask' object has no attribute 'login_manager'`
+### `AttributeError: 'Flask' object has no attribute 'login_manager'`
 * **Causa:** Falta de inicialización del objeto `LoginManager` en el contexto de la app.
 * **Solución:** Inicialización correcta de `Flask-Login` mediante `login_manager.init_app(app)` antes del procesamiento de rutas protegidas.
 
-## 🚀 Instalación y Despliegue Local
+## Instalación y Despliegue Local
 
 **1. Clonar el repositorio:**
 
