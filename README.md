@@ -4,6 +4,55 @@
 
 ---
 
+## Stack Tecnológico y Herramientas
+
+Para cumplir con los objetivos de **SecDevOps**, se ha integrado un ecosistema de herramientas enfocadas en la robustez, la escalabilidad y, sobre todo, la seguridad proactiva.
+
+---
+
+### Desarrollo (Backend & Frontend)
+El núcleo de la aplicación se basa en tecnologías ágiles que permiten una integración fluida de medidas de seguridad.
+
+| Tecnología | Propósito |
+| :--- | :--- |
+| **Python 3.11** | Lenguaje principal del proyecto. |
+| **Flask** | Framework web para el Front-end y la lógica de la API. |
+| **Jinja2** | Motor de plantillas para renderizar la interfaz dinámica de forma segura. |
+| **SQLite + SQLAlchemy** | Base de datos ligera con ORM para prevenir ataques de **Inyección SQL**. |
+| **TMDB API** | Fuente externa para el suministro de datos cinematográficos. |
+
+---
+
+### Seguridad (SecDevOps)
+Siguiendo las mejores prácticas de **OWASP**, se han implementado las siguientes capas de protección:
+
+* **Flask-Talisman:** Configuración de cabeceras de seguridad críticas como `CSP` (Content Security Policy), `HSTS` y `X-Frame-Options`.
+* **Flask-Bcrypt:** Hashing avanzado de contraseñas con *salting* para mitigar riesgos de seguridad en credenciales (**OWASP A02**).
+* **Flask-Login:** Gestión segura de sesiones de usuario y control de acceso basado en roles (**RBAC**).
+* **Python-dotenv:** Desacoplamiento de secretos y credenciales del código fuente mediante variables de entorno.
+
+---
+
+### Virtualización y Despliegue
+Garantizamos que el entorno de ejecución sea reproducible y esté aislado.
+
+* **Docker:** Contenerización de la aplicación para asegurar portabilidad y aislamiento de procesos.
+* **Python venv:** Entornos virtuales para la gestión estricta de dependencias en desarrollo local.
+
+---
+
+### Pruebas y Auditoría
+Validación continua de la integridad del código y la seguridad de los endpoints.
+
+* **Postman:** Suite para pruebas de integración y auditoría técnica de cabeceras de seguridad.
+* **Unittest:** Framework nativo para la ejecución de pruebas unitarias sobre la lógica de negocio.
+
+---
+
+### Automatización y Control
+* **GitHub Actions:** Pipeline de **CI/CD** para la construcción automática de imágenes y validación de Dockerfiles.
+* **Git / GitHub:** Control de versiones y flujo de trabajo basado en ramas para asegurar la trazabilidad del código.
+
 ## Arquitectura de Seguridad (OWASP Top 10 Compliance)
 
 Este proyecto ha sido auditado y diseñado para mitigar las vulnerabilidades más críticas según el estándar internacional **OWASP**:
@@ -69,15 +118,6 @@ pm.test("Seguridad: Cabecera X-Frame-Options presente", function () {
     pm.expect(pm.response.headers.has("X-Frame-Options")).to.be.true;
 });
 ```
-
-### Resumen de Resultados de la Auditoría
-
-| Categoría | Prueba | Resultado | Riesgo Mitigado |
-| :--- | :--- | :--- | :--- |
-| **Identidad** | Autenticación Segura | <code>PASSED ✅</code> | A07:2025 – Fallos de Identificación |
-| **Autorización** | Detección de Rol Admin | <code>PASSED ✅</code> | A01:2025 – Acceso Quebrado |
-| **Infraestructura** | Hardening (Server Header) | <code>PASSED ✅</code> | A05:2025 – Configuración Insegura |
-| **Integridad** | Protección Clickjacking | <code>PASSED ✅</code> | A04:2025 – Diseño Inseguro |
 
 ## Entorno de Desarrollo y Aislamiento
 
