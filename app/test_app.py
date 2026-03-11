@@ -1,6 +1,5 @@
 import pytest
-from app import app # Asegúrate de que la ruta de importación sea la correcta para tu estructura
-
+from app import app
 @pytest.fixture
 def client():
     """Fixture que prepara el cliente de pruebas de Flask"""
