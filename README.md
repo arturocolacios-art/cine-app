@@ -74,10 +74,10 @@ pm.test("Seguridad: Cabecera X-Frame-Options presente", function () {
 
 | Categoría | Prueba | Resultado | Riesgo Mitigado |
 | :--- | :--- | :--- | :--- |
-| **Identidad** | Autenticación Segura | <code>PASSED ✅</code> | A07:2021 – Fallos de Identificación |
-| **Autorización** | Detección de Rol Admin | <code>PASSED ✅</code> | A01:2021 – Acceso Quebrado |
-| **Infraestructura** | Hardening (Server Header) | <code>PASSED ✅</code> | A05:2021 – Configuración Insegura |
-| **Integridad** | Protección Clickjacking | <code>PASSED ✅</code> | A04:2021 – Diseño Inseguro |
+| **Identidad** | Autenticación Segura | <code>PASSED ✅</code> | A07:2025 – Fallos de Identificación |
+| **Autorización** | Detección de Rol Admin | <code>PASSED ✅</code> | A01:2025 – Acceso Quebrado |
+| **Infraestructura** | Hardening (Server Header) | <code>PASSED ✅</code> | A05:2025 – Configuración Insegura |
+| **Integridad** | Protección Clickjacking | <code>PASSED ✅</code> | A04:2025 – Diseño Inseguro |
 
 ## 🛠️ Resolución de Problemas (Troubleshooting)
 
