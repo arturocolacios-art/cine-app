@@ -79,19 +79,16 @@ pm.test("Seguridad: Cabecera X-Frame-Options presente", function () {
 | **Infraestructura** | Hardening (Server Header) | <code>PASSED ✅</code> | A05:2025 – Configuración Insegura |
 | **Integridad** | Protección Clickjacking | <code>PASSED ✅</code> | A04:2025 – Diseño Inseguro |
 
-## Resolución de Problemas (Troubleshooting)
+## Entorno de Desarrollo y Aislamiento
 
-Durante el desarrollo y despliegue se detectaron y corrigieron los siguientes incidentes técnicos:
+Siguiendo las buenas prácticas de desarrollo y los requisitos de la asignatura, se ha utilizado un **entorno virtual (`venv`)** para aislar las dependencias del proyecto. Esto garantiza que las librerías de `CineApp` no entren en conflicto con otros proyectos y permite una gestión limpia de los requisitos.
 
-### `NameError: 'Usuario' is not defined`
-* **Causa:** Conflicto de nomenclatura entre la clase del modelo y la referencia en la ruta.
-* **Solución:** Reestructuración de las importaciones de los modelos SQLAlchemy y estandarización del nombre de la clase a `User`.
-
----
-
-### `AttributeError: 'Flask' object has no attribute 'login_manager'`
-* **Causa:** Falta de inicialización del objeto `LoginManager` en el contexto de la app.
-* **Solución:** Inicialización correcta de `Flask-Login` mediante `login_manager.init_app(app)` antes del procesamiento de rutas protegidas.
+### Configuración del entorno:
+1. **Creación**: `python -m venv venv`
+2. **Activación**:
+   - Windows: `.\venv\Scripts\activate`
+   - Linux/Mac: `source venv/bin/activate`
+3. **Instalación de dependencias**: `pip install -r requirements.txt`
 
 ## Instalación y Despliegue Local
 
