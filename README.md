@@ -1,10 +1,10 @@
-# 🎬 CineApp: Gestión Segura de Cartelera y Roles (SecDevOps)
+# CineApp: Gestión Segura de Cartelera y Roles (SecDevOps)
 
 **CineApp** es una plataforma web desarrollada con **Python (Flask)** bajo principios de seguridad **SecDevOps**. El sistema permite la gestión de usuarios, visualización de películas en tiempo real y un panel de administración protegido mediante roles dinámicos.
 
 ---
 
-## 🛡️ Arquitectura de Seguridad (OWASP Top 10 Compliance)
+## Arquitectura de Seguridad (OWASP Top 10 Compliance)
 
 Este proyecto ha sido auditado y diseñado para mitigar las vulnerabilidades más críticas según el estándar internacional **OWASP**:
 
@@ -20,7 +20,7 @@ Implementación de **RBAC** (*Role-Based Access Control*) mediante `Flask-Login`
 
 ---
 
-## 🔌 Integración de Servicios Externos (API TMDB)
+# Integración de Servicios Externos (API TMDB)
 
 La aplicación consume datos en tiempo real de **The Movie Database (TMDB)** siguiendo buenas prácticas de seguridad:
 
@@ -30,7 +30,7 @@ La aplicación consume datos en tiempo real de **The Movie Database (TMDB)** sig
 
 ---
 
-## 🧪 Suite de Pruebas y Validación de Seguridad (Postman)
+## Suite de Pruebas y Validación de Seguridad (Postman)
 
 Se ha implementado una batería de pruebas automatizadas que validan la seguridad en tres niveles críticos:
 
@@ -55,7 +55,7 @@ Valida que el servidor aplica la lógica de autorización entregando contenido e
 ```javascript
 pm.test("Verificación de Rol: Interfaz de ADMIN detectada", function () {
     var responseText = pm.response.text();
-    pm.expect(responseText).to.include("🛡️ Panel de Control: Administrador");
+    pm.expect(responseText).to.include("Panel de Control: Administrador");
 });
 ```
 
