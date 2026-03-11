@@ -59,7 +59,7 @@ pm.test("Verificación de Rol: Interfaz de ADMIN detectada", function () {
 });
 ```
 
-3. Auditoría de Protección de Navegador (Middleware Talisman)
+### 3. Auditoría de Protección de Navegador (Middleware Talisman)
 
 Validamos la presencia de cabeceras críticas inyectadas por el firewall de aplicación.
 
