@@ -26,7 +26,8 @@ El núcleo de la aplicación se basa en tecnologías ágiles que permiten una in
 ### Seguridad (SecDevOps)
 Siguiendo las mejores prácticas de **OWASP**, se han implementado las siguientes capas de protección:
 
-* **Flask-Talisman:** Configuración de cabeceras de seguridad críticas como `CSP` (Content Security Policy), `HSTS` y `X-Frame-Options`.
+* **Flask-Talisman:** Configuración de cabeceras de seguridad críticas como `CSP`, `HSTS` y `X-Frame-Options`.
+  * [Ver implementación en `app/app.py` (Línea 20)](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L20)
 * **Flask-Bcrypt:** Hashing avanzado de contraseñas con *salting* para mitigar riesgos de seguridad en credenciales (**OWASP A02**).
 * **Flask-Login:** Gestión segura de sesiones de usuario y control de acceso basado en roles (**RBAC**).
 * **Python-dotenv:** Desacoplamiento de secretos y credenciales del código fuente mediante variables de entorno.
@@ -66,6 +67,17 @@ Implementación de **RBAC** (*Role-Based Access Control*) mediante `Flask-Login`
 * **[A05:2025 – Inyección](https://owasp.org/Top10/2025/A04_2025-Injection/)**
   Uso de **SQLAlchemy ORM** para la abstracción de base de datos. Esto permite realizar consultas parametrizadas automáticas por defecto, eliminando de raíz el riesgo de ataques de Inyección SQL.
 
+
+---
+
+## Cumplimiento de Seguridad (OWASP API Top 10)
+
+Este proyecto ha sido diseñado siguiendo los estándares de **OWASP API Security 2023** para mitigar los riesgos más críticos en servicios web:
+
+* **[API1:2023 – Broken Object Level Authorization](https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/)** Control de acceso basado en roles (RBAC) con Flask-Login para asegurar que un usuario solo acceda a sus propios datos.
+* **[API2:2023 – Broken Authentication](https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/)** Protección contra fuerza bruta y robo de credenciales mediante el hashing robusto de **Bcrypt**.
+* **[API8:2023 – Security Misconfiguration](https://owasp.org/API-Security/editions/2023/en/0xa8-security-misconfiguration/)** Eliminación de información sensible en errores de producción y uso de cabeceras `CSP`, `HSTS` y `X-Frame-Options` vía **Flask-Talisman**.
+* **[API10:2023 – Unsafe Consumption of APIs](https://owasp.org/API-Security/editions/2023/en/0xaa-unsafe-consumption-of-apis/)** Validación estricta de los datos recibidos de la API externa (TMDB) antes de ser procesados por el motor de plantillas **Jinja2**.
 
 ---
 
