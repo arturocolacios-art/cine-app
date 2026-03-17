@@ -47,8 +47,8 @@ Garantizamos que el entorno de ejecución sea reproducible y esté aislado.
 ### Pruebas y Auditoría
 Validación continua de la integridad del código y la seguridad de los endpoints.
 
-* [**Postman:**](app/tests/My Collection.postman_collection.json) Suite para pruebas de integración y auditoría técnica de cabeceras de seguridad.
-* **Unittest:** Framework nativo para la ejecución de pruebas unitarias sobre la lógica de negocio.
+* [**Postman:**](./app/tests/My_Collection.postman_collection.json) Suite para pruebas de integración y auditoría técnica de cabeceras de seguridad.
+* [**Unittest:**](app/test_app.py) Framework nativo para la ejecución de pruebas unitarias sobre la lógica de negocio.
 
 ---
 
