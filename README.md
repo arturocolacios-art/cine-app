@@ -32,7 +32,8 @@ Siguiendo las mejores prácticas de **OWASP**, se han implementado las siguiente
   * [Ver implementación](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L28)
 * **Flask-Login:** Gestión segura de sesiones de usuario y control de acceso basado en roles (**RBAC**).
   * [Ver implementación](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L15)
-* **Python-dotenv:** Desacoplamiento de secretos y credenciales del código fuente mediante variables de entorno.
+* **SQLAlchemy** Prevención de ataques de **Inyección SQL** mediante el uso de consultas parametrizadas automáticas.
+  * [Ver implementación](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L27)
 
 ---
 
@@ -47,7 +48,7 @@ Garantizamos que el entorno de ejecución sea reproducible y esté aislado.
 ### Pruebas y Auditoría
 Validación continua de la integridad del código y la seguridad de los endpoints.
 
-* [**Postman:**](./app/tests/My_Collection.postman_collection.json) Suite para pruebas de integración y auditoría técnica de cabeceras de seguridad.
+* [**Postman:**](app/tests/My_Collection.postman_collection.json) Suite para pruebas de integración y auditoría técnica de cabeceras de seguridad.
 * [**Unittest:**](app/test_app.py) Framework nativo para la ejecución de pruebas unitarias sobre la lógica de negocio.
 
 ---
@@ -93,7 +94,7 @@ La aplicación consume datos en tiempo real de **The Movie Database (TMDB)** sig
 
 ---
 
-## Suite de Pruebas y Validación de Seguridad (Postman)
+## Suite de Pruebas y Validación de Seguridad [(Postman)](app/tests/My_Collection.postman_collection.json)
 
 Se ha implementado una batería de pruebas automatizadas que validan la seguridad en tres niveles críticos:
 
