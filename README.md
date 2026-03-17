@@ -27,9 +27,11 @@ El núcleo de la aplicación se basa en tecnologías ágiles que permiten una in
 Siguiendo las mejores prácticas de **OWASP**, se han implementado las siguientes capas de protección:
 
 * **Flask-Talisman:** Configuración de cabeceras de seguridad críticas como `CSP`, `HSTS` y `X-Frame-Options`.
-  * [Ver implementación en `app/app.py` (Línea 20)](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L20)
+  * [Ver implementación](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L20)
 * **Flask-Bcrypt:** Hashing avanzado de contraseñas con *salting* para mitigar riesgos de seguridad en credenciales (**OWASP A02**).
+  * [Ver implementación](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L28)
 * **Flask-Login:** Gestión segura de sesiones de usuario y control de acceso basado en roles (**RBAC**).
+  * [Ver implementación](https://github.com/arturocolacios-art/cine-app/blob/main/app/app.py#L15)
 * **Python-dotenv:** Desacoplamiento de secretos y credenciales del código fuente mediante variables de entorno.
 
 ---
@@ -37,15 +39,15 @@ Siguiendo las mejores prácticas de **OWASP**, se han implementado las siguiente
 ### Virtualización y Despliegue
 Garantizamos que el entorno de ejecución sea reproducible y esté aislado.
 
-* **Docker:** Contenerización de la aplicación para asegurar portabilidad y aislamiento de procesos.
-* **Python venv:** Entornos virtuales para la gestión estricta de dependencias en desarrollo local.
+* [**Docker**](./Dockerfile): Contenerización de la aplicación para asegurar portabilidad y aislamiento de procesos.
+* [**Python venv:**](./ImagenEntornoVirtual.png) Entornos virtuales para la gestión estricta de dependencias en desarrollo local.
 
 ---
 
 ### Pruebas y Auditoría
 Validación continua de la integridad del código y la seguridad de los endpoints.
 
-* **Postman:** Suite para pruebas de integración y auditoría técnica de cabeceras de seguridad.
+* [**Postman:**](app/tests/My Collection.postman_collection.json) Suite para pruebas de integración y auditoría técnica de cabeceras de seguridad.
 * **Unittest:** Framework nativo para la ejecución de pruebas unitarias sobre la lógica de negocio.
 
 ---
