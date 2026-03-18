@@ -57,6 +57,32 @@ Validación continua de la integridad del código y la seguridad de los endpoint
 * **GitHub Actions:** Pipeline de **CI/CD** para la construcción automática de imágenes y validación de Dockerfiles.
 * **Git / GitHub:** Control de versiones y flujo de trabajo basado en ramas para asegurar la trazabilidad del código.
 
+---
+
+## Estructura del Proyecto
+
+```text
+cine-app/
+├── app/                    # Directorio principal de la aplicación
+│   ├── static/             # Archivos CSS, JS e imágenes del frontend
+│   ├── templates/          # Plantillas HTML (Jinja2)
+│   ├── tests/              # Suite de pruebas (Pytest y Postman)
+│   │   ├── My_Collection.postman_collection.json
+│   │   └── test_app.py
+│   ├── app.py              # Lógica principal y configuración de seguridad
+│   └── models.py           # Definición de modelos (SQLAlchemy)
+├── docs/                   # Documentación adicional y tutoriales
+├── instance/               # Archivos de instancia local (SQLite)
+├── .dockerignore           # Archivos excluidos de Docker
+├── .gitignore              # Archivos excluidos de Git
+├── docker-compose.yml      # Orquestación de contenedores
+├── Dockerfile              # Definición de la imagen Docker
+├── requirements.txt        # Dependencias del proyecto
+└── README.md               # Documentación principal
+```
+
+---
+
 ## Arquitectura de Seguridad (OWASP Top 10 Compliance)
 
 Este proyecto ha sido auditado y diseñado para mitigar las vulnerabilidades más críticas según el estándar internacional **OWASP**:
